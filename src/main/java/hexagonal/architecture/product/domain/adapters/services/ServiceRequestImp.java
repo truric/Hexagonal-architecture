@@ -32,6 +32,27 @@ public class ServiceRequestImp implements ProductServicePort {
     }
 
     @Override
+    public ProductDTO getProductBySku(String sku) throws NotFoundException {
+        Product product = this.productRepositoryPort.searchBySku(sku);
+
+        if (Objects.isNull(product))
+            throw new NotFoundException("Product not found");
+
+        ProductDTO productDTO = product.toProductDTO();
+        return productDTO;
+    }
+
+    @Override
+    public void deleteBySku(String sku) throws NotFoundException{
+        Product product = this.productRepositoryPort.searchBySku(sku);
+
+        if (Objects.isNull(product))
+            throw new NotFoundException("Product not found");
+
+       this.productRepositoryPort.deleteBySku(sku);
+    }
+
+    @Override
     public void updateStock(String sku, StockDTO stockDTO) throws NotFoundException {
         Product product = this.productRepositoryPort.searchBySku(sku);
 
