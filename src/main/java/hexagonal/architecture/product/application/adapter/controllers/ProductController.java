@@ -3,8 +3,12 @@ package hexagonal.architecture.product.application.adapter.controllers;
 import hexagonal.architecture.product.domain.dtos.ProductDTO;
 import hexagonal.architecture.product.domain.dtos.StockDTO;
 import hexagonal.architecture.product.domain.ports.interfaces.ProductServicePort;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,8 +22,13 @@ public class ProductController {
     }
 
     @PostMapping
-    void createProducts(@RequestBody ProductDTO productDTO) {
-        productServicePort.createProduct(productDTO);
+    ResponseEntity<String> createProducts(@Valid @RequestBody ProductDTO productDTO) {
+        try {
+            productServicePort.createProduct(productDTO);
+            return ResponseEntity.ok("Product created successfully");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "SKU value must be unique", e);
+        }
     }
 
     @GetMapping

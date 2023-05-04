@@ -6,6 +6,7 @@ import hexagonal.architecture.product.domain.dtos.StockDTO;
 import hexagonal.architecture.product.domain.ports.interfaces.ProductServicePort;
 import hexagonal.architecture.product.domain.ports.repositories.ProductRepositoryPort;
 import jakarta.ws.rs.NotFoundException;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,9 +20,14 @@ public class ServiceRequestImp implements ProductServicePort {
     }
 
     @Override
-    public void createProduct(ProductDTO productDTO) {
-        Product product = new Product(productDTO);
-        this.productRepositoryPort.save(product);
+    public ResponseEntity<String> createProduct(ProductDTO productDTO) {
+        try {
+            Product product = new Product(productDTO);
+            this.productRepositoryPort.save(product);
+            return ResponseEntity.ok("Product created successfully");
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while creating the product", e);
+        }
     }
 
     @Override
